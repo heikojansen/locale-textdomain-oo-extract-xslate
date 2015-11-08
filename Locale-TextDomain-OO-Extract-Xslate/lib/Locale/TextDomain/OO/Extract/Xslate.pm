@@ -9,8 +9,6 @@ use Moo;
 use Path::Tiny;
 use namespace::autoclean;
  
-our $VERSION = '1.000000';
-
 with qw(
 	Locale::TextDomain::OO::Extract::Role::File
 );
@@ -217,3 +215,136 @@ sub _parseMsg {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
+
+=pod
+
+=head1 SYNOPSIS
+
+    use Locale::TextDomain::OO::Extract::Xslate;
+    use Locale::TextDomain::OO::Extract::Process;
+
+    my $process = Locale::TextDomain::OO::Extract::Process->new();
+    my $extract = Locale::TextDomain::OO::Extract::Xslate->new();
+
+    # extract
+    for my $file (qw( foo.tx bar.tx )) {
+        $extract->clear;
+        $extract->filename($file);
+        $extract->extract;
+    }
+
+    # merge
+    for my $language (qw( de en )) {
+        $process->language($language);
+        $process->merge_extract({
+            lexicon_ref => $extract->lexicon_ref,
+        });
+    }
+
+=head1 DESCRIPTION
+
+L<Locale::TextDomain::OO::Extract::Xslate> extracts messages from 
+L<Text::Xslate> templates for later translation handling with 
+L<Locale::TextDomain::OO>.
+
+The template code is scanned for invocations of methods or functions with
+certain names. Currently the following names are recognized:
+
+=over 4
+
+=item C<__> (double underscore)
+
+=item C<__x>
+
+=item C<__n>
+
+=item C<__nx>
+
+=item C<__p>
+
+=item C<__px>
+
+=item C<__np>
+
+=item C<__npx>
+
+=back
+
+The same methods are recognized when the first B<_> (underscore) is replaced
+by B<loc> (resulting in C<loc_>, C<loc_x>, and so on).
+
+Both variants can also optionally be prefixed by B<N>.
+
+For the encoded meaning of these names please refer to 
+L<Locale::TextDomain::OO::Plugin::Expand::Gettext> and 
+L<Locale::TextDomain::OO::Plugin::Expand::Gettext::Loc>, respectively.
+
+Please note that as of now the usage of dynamic domains and/or categories 
+(as provided by L<Locale::TextDomain::OO::Plugin::Expand::Gettext::DomainAndCategory>)
+is B<not> supported!
+
+=head1 CONSTRUCTOR OPTIONS
+
+The following params can be provided to the plugin on object construction:
+
+=over 4
+
+=item C<syntax>
+
+Specify the syntax used in the templates to be scanned.
+Acceptable values are
+
+=over 8
+
+=item L<Text::Xslate::Syntax::Kolon|Kolon> (also the default)
+
+=item L<Text::Xslate::Syntax::Metakolon|Metakolon>
+
+=item L<Text::Xslate::Syntax::TTerse|TTerse>
+
+=back
+
+=item C<debug>
+
+Passing in a true value for this option enables a dumping (to STDERR) of 
+the abstract syntax tree of the template. This is mostly useful for the 
+development of this module.
+
+=back
+
+=head1 METHODS
+
+L<Locale::TextDomain::OO::Extract::Xslate> DOES the role L<Locale::TextDomain::OO::Extract::Role::File>
+and therefore you can call the methods defined in that role on the objects of
+this class.
+
+=head2 C<extract>
+
+After using the C<filename> method to specify which template to work on next,
+invoking this method will start the extraction process. Expects no parameters.
+
+=head2 C<debug>
+
+Passing in a C<true> or C<false> value you can enable or disable the debugging
+output (written to STDERR).
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<Locale::TextDomain::OO>
+
+=item L<Locale::TextDomain::OO::Extract>
+
+=item L<Locale::TextDomain::OO::Extract::Process>
+
+=item L<Locale::TextDomain::OO::Extract::Role::File>
+
+=back
+
+The code of this module and the way it uses the AST from L<Text::Xslate> itself
+to identify the messages is heavily inspired by (read: stolen from) 
+L<Localizer::Scanner::Xslate>.
+
