@@ -28,6 +28,23 @@ has 'parser' => (
 	init_arg => undef,
 );
 
+has 'l10n_function_re' => (
+	is      => 'ro',
+	default => sub {
+					qr{\A
+						N?
+						(?:loc|_)
+						_
+						(x|n|nx|p|px|np|npx)?
+						\Z
+					 }x
+				 },
+);
+
+has 'addl_l10n_function_re' => (
+	is      => 'rw',
+);
+
 sub _build_parser {
 	my $self = shift;
 	my $syntax = $self->syntax;
@@ -79,6 +96,15 @@ sub _walker {
 	my($self, $ast) = @_;
 	$ast = [ $ast ] if $ast && ref($ast) eq 'Text::Xslate::Symbol';
 	return unless $ast && ref($ast) eq 'ARRAY';
+
+	my $l10n_fns = $self->l10n_function_re;
+	if (my $addl_l10n_fns = $self->addl_l10n_function_re){
+		$l10n_fns = qr{
+			(?: $l10n_fns )
+			|
+			(?: \A N? $addl_l10n_fns \z )
+		}x;
+	}
  
 	for my $sym (@{ $ast }) {
 
@@ -86,7 +112,7 @@ sub _walker {
 			my $second = $sym->second;
 			if ( $second && ref($second) eq 'Text::Xslate::Symbol' ) {
 				if (   $second->arity eq 'literal'
-					&& $second->value =~ /\AN?(?:loc|_)_(x|n|nx|p|px|np|npx)?\Z/
+					&& $second->value =~ $l10n_fns
 				) {
 					my $flags = ( $1 || '' );
 					my $third = $sym->third;
@@ -109,11 +135,14 @@ sub _walker {
 				}
 			}
 		}
-		elsif ( $sym->arity eq 'call' && $sym->value eq '(' ) {
+		elsif ( $sym->arity eq 'call' && 
+				# __x("foo")             "foo" | __x
+				($sym->value eq '(' ) || $sym->value eq '(call)') {
 			my $first = $sym->first;
 			if ( $first && ref($first) eq 'Text::Xslate::Symbol' ) {
 				if (   $first->arity eq 'name'
-					&& $first->value =~ /\AN?(?:loc|_)_(x|n|nx|p|px|np|npx)?\Z/ ) {
+					&& $first->value =~ $l10n_fns
+				) {
 					my $flags = ( $1 || '' );
 					my $second = $sym->second;
 					if (   $second
@@ -311,6 +340,13 @@ Acceptable values are
 Passing in a true value for this option enables a dumping (to STDERR) of 
 the abstract syntax tree of the template. This is mostly useful for the 
 development of this module.
+
+=item C<addl_l10n_function_re>
+
+If you need to extract more than the default list of translation functions,
+you can add yours with this, e.g.
+
+	$extract->addl_l10n_function_re(qr{ loc | i10n_me | whatever }x);
 
 =back
 
