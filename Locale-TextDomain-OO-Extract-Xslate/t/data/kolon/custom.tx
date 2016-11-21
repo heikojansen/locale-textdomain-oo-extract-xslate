@@ -8,6 +8,7 @@
     <p>
     <!-- filters with multiple arguments aren't supported yet in xslate, so we
          only need to test the basic case
+         https://github.com/xslate/p5-Text-Xslate/issues/121
     -->
 : for $books -> $book {
       <em><: "Book named 'Moby Dick'." | loc :></em>
