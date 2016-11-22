@@ -110,18 +110,18 @@ $expected = {
 		},
 		"Text with {variable}.\x{04}some context" => {
 			'reference' => {
-				't/data/kolon/custom.tx:18' => undef,
+				't/data/kolon/custom.tx:19' => undef,
 			}
 		},
 		"Text with umlauts: \x{e4}\x{f6}\x{fc}\x{df}." => {
 			'reference' => {
 				't/data/kolon/custom.tx:17' => undef,
-				't/data/kolon/custom.tx:16' => undef,
+				't/data/kolon/custom.tx:18' => undef,
 			}
 		},
 		'Book named \'Moby Dick\'.' => {
 			'reference' => {
-				't/data/kolon/custom.tx:13' => undef,
+				't/data/kolon/custom.tx:14' => undef,
 			}
 		},
 	},
