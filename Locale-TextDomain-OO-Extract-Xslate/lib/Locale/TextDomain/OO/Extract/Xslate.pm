@@ -306,6 +306,11 @@ by B<loc> (resulting in C<loc_>, C<loc_x>, and so on).
 
 Both variants can also optionally be prefixed by B<N>.
 
+Texts to be translated are also recognized and extracted where filters
+with these names are used. But please note that since filters cannot
+take arguments, only C<__> and C<loc_> (and perhaps some custom methods;
+cf. C<addl_l10n_function_re> below) may reasonably be used as filters!
+
 For the encoded meaning of these names please refer to 
 L<Locale::TextDomain::OO::Plugin::Expand::Gettext> and 
 L<Locale::TextDomain::OO::Plugin::Expand::Gettext::Loc>, respectively.
