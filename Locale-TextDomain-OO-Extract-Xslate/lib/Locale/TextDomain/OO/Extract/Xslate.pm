@@ -31,14 +31,14 @@ has 'parser' => (
 has 'l10n_function_re' => (
 	is      => 'ro',
 	default => sub {
-					qr{\A
-						N?
-						(?:loc|_)
-						_
-						(x|n|nx|p|px|np|npx)?
-						\Z
-					 }x
-				 },
+		qr{\A
+			N?
+			(?:loc|_)
+			_
+			(x|n|nx|p|px|np|npx)?
+			\Z
+		 }x
+	},
 );
 
 has 'addl_l10n_function_re' => (
