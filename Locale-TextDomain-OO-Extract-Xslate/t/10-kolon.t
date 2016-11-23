@@ -69,10 +69,10 @@ my $expected = {
 };
 
 my @files = (qw(
-				t/data/kolon/functions.tx
-				t/data/kolon/methods.tx
-				t/data/kolon/filters.tx
-			));
+	t/data/kolon/functions.tx
+	t/data/kolon/methods.tx
+	t/data/kolon/filters.tx
+));
 my $extract = Locale::TextDomain::OO::Extract::Xslate->new();
 
 for my $file ( map { path($_) } @files ) {
@@ -83,7 +83,7 @@ for my $file ( map { path($_) } @files ) {
 }
 
 my $got = $extract->lexicon_ref;
-is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates" )
+is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates with standard methods and filters" )
 	or warn Dumper $got;
 
 
@@ -137,7 +137,7 @@ for my $file ( map { path($_) } 't/data/kolon/custom.tx' ) {
 	$extract->extract;
 }
 my $got = $extract->lexicon_ref;
-is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates" )
+is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates with custom methods" )
 	or warn Dumper $got;
 
 done_testing;
