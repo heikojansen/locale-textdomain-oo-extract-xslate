@@ -1,6 +1,8 @@
 #!perl
 # vim:syntax=perl:tabstop=4:number:noexpandtab:
 
+use strict;
+
 use Locale::TextDomain::OO::Extract::Xslate;
 use Path::Tiny qw(path);
 use Data::Dumper;
@@ -139,5 +141,27 @@ for my $file ( map { path($_) } 't/data/kolon/custom.tx' ) {
 my $got = $extract->lexicon_ref;
 is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates with custom methods" )
 	or warn Dumper $got;
+
+
+# separate test for __($a_variable) warning bug,
+# separate so I don't have to change the line numbers in the existing ones
+{
+my @warnings;
+local $SIG{__WARN__} = sub { print STDERR @_; push @warnings, @_ };
+$extract = Locale::TextDomain::OO::Extract::Xslate->new();
+$expected = { };
+for my $file ( map { path($_) } 't/data/kolon/a_variable.tx' ) {
+	my $fn = $file->relative( q{./} )->stringify;
+	$extract->clear;
+	$extract->filename($fn);
+	$extract->extract;
+}
+my $got = $extract->lexicon_ref;
+is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates with __(\$foo)" )
+	or warn Dumper $got;
+	is scalar @warnings, 0, "No warnings from __(\$foo) stuff"
+		or warn "warnings: @warnings";
+}
+
 
 done_testing;

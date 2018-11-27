@@ -1,0 +1,6 @@
+# a filter, a function, and a method
+# doing a separate file so I don't have to update the
+# expected line numbers in the existing test
+<: $a_variable | __ :>
+<: __($a_variable) :>
+<: $c.__($a_variable) :>
