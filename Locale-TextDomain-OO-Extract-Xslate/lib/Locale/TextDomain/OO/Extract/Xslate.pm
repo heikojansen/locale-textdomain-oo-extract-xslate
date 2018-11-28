@@ -135,9 +135,9 @@ sub _walker {
 				}
 			}
 		}
-		elsif ( $sym->arity eq 'call' && 
+		elsif ( $sym->arity eq 'call' && defined $sym->value &&
 				# __x("foo")             "foo" | __x
-				($sym->value eq '(' ) || $sym->value eq '(call)') {
+				($sym->value eq '(' or $sym->value eq '(call)')) {
 			my $first = $sym->first;
 			if ( $first && ref($first) eq 'Text::Xslate::Symbol' ) {
 				if (   $first->arity eq 'name'
