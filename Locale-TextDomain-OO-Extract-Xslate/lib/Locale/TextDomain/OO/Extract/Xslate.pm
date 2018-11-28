@@ -120,7 +120,7 @@ sub _walker {
 						&& ref($third) eq 'ARRAY'
 						&& $third->[0]
 						&& ref( $third->[0] ) eq 'Text::Xslate::Symbol'
-						&& $third->[0]->arity ne 'variable'
+						&& $third->[0]->arity !~ /^(?: variable | methodcall | field )$/x
 					) {
 						my %msg = ( FILE => $FILENAME, LINE => $second->line, FLAGS => $flags, );
 						if ( _parseMsg( \%msg, $flags, $third ) ) {
@@ -130,8 +130,8 @@ sub _walker {
 							warn "Invalid parameters for translation command at '$FILENAME', line " . $second->line;
 						}
 					}
-					elsif ($third->[0]->arity eq 'variable') {
-						next; # skip __($foo), nothing to do
+					elsif ( $third->[0]->arity =~ /^(?: variable | methodcall | field )$/x ) {
+						next; # skip __($foo), __($foo.bar): nothing to do
 					}
 					else {
 						warn "Invalid parameters for translation command at '$FILENAME', line " . $second->line;
@@ -153,7 +153,7 @@ sub _walker {
 						&& ref($second) eq 'ARRAY'
 						&& $second->[0]
 						&& ref( $second->[0] ) eq 'Text::Xslate::Symbol'
-						&& $second->[0]->arity ne 'variable'
+						&& $second->[0]->arity !~ /^(?: variable | methodcall | field )$/x
 					) {
 						my %msg = ( FILE => $FILENAME, LINE => $first->line, FLAGS => $flags, );
 						if ( _parseMsg( \%msg, $flags, $second ) ) {
@@ -163,8 +163,8 @@ sub _walker {
 							warn "Invalid parameters for translation command at '$FILENAME', line " . $first->line;
 						}
 					}
-					elsif ($second->[0]->arity eq 'variable') {
-						next; # skip __($foo), nothing to do
+					elsif ( $second->[0]->arity =~ /^(?: variable | methodcall | field )$/x ) {
+						next; # skip __($foo), __($foo.bar): nothing to do
 					}
 					else {
 						warn "Invalid parameters for translation command at '$FILENAME', line " . $first->line;

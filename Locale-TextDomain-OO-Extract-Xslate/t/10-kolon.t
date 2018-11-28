@@ -148,7 +148,7 @@ is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates wi
 {
 my @warnings;
 local $SIG{__WARN__} = sub { print STDERR @_; push @warnings, @_ };
-$extract = Locale::TextDomain::OO::Extract::Xslate->new();
+$extract = Locale::TextDomain::OO::Extract::Xslate->new(debug => 0);
 $expected = { };
 for my $file ( map { path($_) } 't/data/kolon/a_variable.tx' ) {
 	my $fn = $file->relative( q{./} )->stringify;
