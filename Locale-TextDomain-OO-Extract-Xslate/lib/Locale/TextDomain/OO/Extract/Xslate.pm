@@ -108,6 +108,8 @@ sub _walker {
  
 	for my $sym (@{ $ast }) {
 
+		next if ref $sym eq 'ARRAY';
+
 		if ( $sym->arity eq 'methodcall' && $sym->value eq '.' ) {
 			my $second = $sym->second;
 			if ( $second && ref($second) eq 'Text::Xslate::Symbol' ) {

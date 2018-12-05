@@ -133,7 +133,7 @@ for my $file ( map { path($_) } 't/data/kolon/custom.tx' ) {
 	$extract->clear;
 	$extract->filename($fn);
 
-	# add out additional l10n functions
+	# add our additional l10n functions
 	$extract->addl_l10n_function_re(qr{ loc | i10n_me | whatever }x);
 
 	$extract->extract;
@@ -163,5 +163,51 @@ is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates wi
 		or warn "warnings: @warnings";
 }
 
+
+# separate test for :cascade
+{
+$extract = Locale::TextDomain::OO::Extract::Xslate->new();
+$expected = {
+	'i-default::' => {
+		'' => {
+			'msgstr' => {
+				'plural' => 'n != 1',
+				'nplurals' => 2
+			}
+		},
+		'The macro says: ' => {
+			'reference' => {
+				't/data/kolon/cascade/helpers.tx:1' => undef
+			}
+		},
+		'My Template!' => {
+			'reference' => {
+				't/data/kolon/cascade/base.tx:4' => undef
+			}
+		},
+		'My template body!' => {
+			'reference' => {
+				't/data/kolon/cascade/foo.tx:4' => undef
+			}
+		}
+	}
+};
+
+
+@files = (qw(
+	t/data/kolon/cascade/helpers.tx
+	t/data/kolon/cascade/base.tx
+	t/data/kolon/cascade/foo.tx
+));
+for my $file ( map { path($_) } @files ) {
+	my $fn = $file->relative( q{./} )->stringify;
+	$extract->clear;
+	$extract->filename($fn);
+	$extract->extract;
+}
+my $got = $extract->lexicon_ref;
+is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates with :cascade" )
+	or warn Dumper $got;
+}
 
 done_testing;
