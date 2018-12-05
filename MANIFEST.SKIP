@@ -2,6 +2,7 @@
 dist.ini
 ~$
 .gitignore
+.perltidyrc
 cpanfile
 cpanfile.snapshot
 local/
