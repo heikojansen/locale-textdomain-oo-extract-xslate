@@ -1,6 +1,9 @@
 
 {{$NEXT}}
 
+0.04      2018-12-05 23:07:23+01:00 Europe/Berlin
+	- Fix dependency specification
+
 0.03      2018-12-05 20:24:12+01:00 Europe/Berlin
 	- Handle variable args to translation functions without
 	  warnings ("__($foo)") - GH#3 - kgoess
