@@ -210,4 +210,24 @@ is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates wi
 	or warn Dumper $got;
 }
 
+
+# separate test for <: if $x = nil :> warning bug,
+{
+my @warnings;
+local $SIG{__WARN__} = sub { print STDERR @_; push @warnings, @_ };
+$extract = Locale::TextDomain::OO::Extract::Xslate->new(debug => 0);
+$expected = { };
+for my $file ( map { path($_) } 't/data/kolon/nil.tx' ) {
+	my $fn = $file->relative( q{./} )->stringify;
+	$extract->clear;
+	$extract->filename($fn);
+	$extract->extract;
+}
+my $got = $extract->lexicon_ref;
+is_deeply( $got, $expected, "Succesful extraction from Kolon syntax templates with nil" )
+	or warn Dumper $got;
+	is scalar @warnings, 0, "No warnings from 'nil'"
+		or warn "warnings: @warnings";
+}
+
 done_testing;
